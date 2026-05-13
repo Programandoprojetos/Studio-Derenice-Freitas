@@ -1,0 +1,130 @@
+[
+  {
+    "id": "manicure-pedicure",
+    "name": "Manicure / Pedicure",
+    "price": 60,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "manicure",
+    "name": "Manicure",
+    "price": 30,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "pedicure",
+    "name": "Pedicure",
+    "price": 30,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "esmaltacao-gel",
+    "name": "Esmaltação em Gel",
+    "price": 60,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "esmaltacao-tradicional",
+    "name": "Esmaltação Tradicional",
+    "price": 20,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "alongamento-unhas",
+    "name": "Alongamento de Unhas",
+    "price": 170,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "blindagem",
+    "name": "Blindagem",
+    "price": 60,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "manutencao-alongamento",
+    "name": "Manutenção de Alongamento",
+    "price": 90,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "spa-pes",
+    "name": "Spa de Pés",
+    "price": 60,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "molde-f1",
+    "name": "Molde F1",
+    "price": 130,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "soft-gel",
+    "name": "Soft Gel",
+    "price": 100,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "postica-realista",
+    "name": "Postiça Realista",
+    "price": 50,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "banho-gel",
+    "name": "Banho em Gel",
+    "price": 90,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "sobrancelha",
+    "name": "Sobrancelha",
+    "price": 30,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "sobrancelha-de-rena",
+    "name": "Sobrancelha de Rena",
+    "price": 50,
+    "type": "standard",
+    "package_sessions_limit": 0,
+    "package_validity_days": 0
+  },
+  {
+    "id": "pacote-mensal-4-sessoes-pe-maos",
+    "name": "Pacote Mensal - 4 sessões Pe&Maos",
+    "price": 160,
+    "type": "package",
+    "package_sessions_limit": 4,
+    "package_validity_days": 30
+  }
+]

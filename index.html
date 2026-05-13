@@ -1,0 +1,475 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Derenice Freitas - Agendamento de Serviços</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+
+<body>
+    <header>
+        <img src="static/images/LOGO.jpg" alt="Logo do Studio Derenice Freitas" id="logo-img">
+        <h1>Studio Derenice Freitas</h1>
+        <p>Agende, cancele ou remarque os horários</p>
+
+        <div class="user-controls">
+            <button id="login-button" aria-label="Abrir login do administrador">Login</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="flash-message" id="flash-message" role="status" aria-live="polite"></div>
+
+        <section class="admin-controls card" id="admin-panel" aria-live="polite">
+            <p>Modo administrador ativo</p>
+            <span id="admin-info">Todos os controles estão desbloqueados.</span>
+        </section>
+
+        <section class="workspace-tabs admin-controls" id="workspace-tabs" aria-label="Navegação das áreas administrativas">
+            <button type="button" class="workspace-tab is-active" data-workspace-view="atendimento">Atendimento</button>
+            <button type="button" class="workspace-tab" data-workspace-view="financeiro">Financeiro</button>
+            <button type="button" class="workspace-tab" data-workspace-view="clientes">Clientes</button>
+        </section>
+
+        <section class="notifications" id="notifications" aria-labelledby="notifications-title">
+            <h3 id="notifications-title">Agendamentos próximos</h3>
+            <p class="next-appointment-summary" id="next-appointment-summary"></p>
+            <ul class="notification-list" id="notification-list"></ul>
+        </section>
+
+        <section class="card admin-controls finance-panel" id="dashboard-panel" aria-labelledby="dashboard-title">
+            <h2 id="dashboard-title">Dashboard Inicial</h2>
+            <div class="finance-summary-grid">
+                <article class="finance-summary-card">
+                    <h3>Atendimentos hoje</h3>
+                    <p id="dashboard-today-count">0</p>
+                </article>
+                <article class="finance-summary-card">
+                    <h3>Entrada prevista hoje</h3>
+                    <p id="dashboard-today-revenue">R$ 0,00</p>
+                </article>
+                <article class="finance-summary-card">
+                    <h3>Próximos horários</h3>
+                    <p id="dashboard-upcoming">Nenhum próximo horário.</p>
+                </article>
+                <article class="finance-summary-card">
+                    <h3>Faltas e cancelamentos</h3>
+                    <p id="dashboard-issues">Nenhuma ocorrência hoje.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="card booking-card" id="booking-panel" aria-labelledby="booking-section-title">
+            <div class="calendar">
+                <h2 id="booking-section-title">Escolha a data do agendamento</h2>
+                <input type="date" id="date" required>
+            </div>
+
+            <div class="services">
+                <h2>Escolha o serviço</h2>
+                <select id="service"></select>
+            </div>
+
+            <section class="service-admin card admin-controls" id="service-admin-panel" aria-labelledby="service-admin-title">
+                <div class="service-admin-header">
+                    <h2 id="service-admin-title">Gerenciar serviços</h2>
+                    <button type="button" id="service-admin-toggle" class="service-admin-toggle" aria-expanded="false" aria-controls="service-admin-content">Mostrar serviços</button>
+                </div>
+                <div id="service-admin-content" class="service-admin-content" hidden>
+                    <form class="service-form" id="service-form">
+                        <input type="text" id="service-name" placeholder="Novo serviço" aria-label="Nome do novo serviço">
+                        <input type="number" id="service-price" placeholder="Preço" min="0" step="0.01" aria-label="Preço do serviço">
+                        <label>
+                            <input type="checkbox" id="service-is-package">
+                            Serviço é pacote mensal
+                        </label>
+                        <input type="number" id="service-package-sessions" placeholder="Sessões por mês" min="1" step="1">
+                        <input type="number" id="service-package-validity" placeholder="Validade em dias" min="1" step="1">
+                        <button type="submit" aria-label="Adicionar novo serviço">Adicionar serviço</button>
+                    </form>
+                    <ul class="service-list" id="service-list"></ul>
+                </div>
+            </section>
+
+            <div class="time-slot">
+                <h2>Escolha o horário</h2>
+                <input type="time" id="time" step="300" min="06:00" max="22:00" required>
+                <p class="booked-times-summary" id="booked-times-summary"></p>
+            </div>
+
+            <form class="booking-form" id="booking-form">
+                <h2>Informações do cliente</h2>
+                <input type="hidden" name="date" id="form-date">
+                <input type="hidden" name="service" id="form-service">
+                <input type="hidden" name="time" id="form-time">
+
+                <input type="text" name="name" id="name" placeholder="Nome completo" required>
+                <input type="tel" name="phone" id="phone" placeholder="Telefone para contato (opcional)" inputmode="tel"
+                    autocomplete="tel" title="Se informar, digite um telefone válido com DDD">
+                <p class="booked-times-summary" id="package-balance-summary"></p>
+                <input type="number" name="discount" id="discount" placeholder="Desconto (opcional)" min="0" step="0.01">
+                <textarea name="notes" id="notes" placeholder="Observações do agendamento (opcional)" rows="3"></textarea>
+
+                <button type="submit" aria-label="Agendar horário">Agendar horário</button>
+            </form>
+        </section>
+
+        <section class="appointment-table-container" id="appointments-panel" aria-labelledby="appointments-title">
+            <h2 id="appointments-title">Agendamentos</h2>
+            <div class="appointment-filters" id="appointment-filters" style="display: none;">
+                <input type="text" id="filter-search" placeholder="Buscar por cliente ou telefone">
+                <input type="date" id="filter-date" aria-label="Filtrar por data">
+                <select id="filter-service" aria-label="Filtrar por serviço">
+                    <option value="">Todos os serviços</option>
+                </select>
+                <select id="filter-status" aria-label="Filtrar por status">
+                    <option value="">Todos os status</option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="compareceu">Compareceu</option>
+                    <option value="faltou">Faltou</option>
+                    <option value="cancelado">Cancelado</option>
+                    <option value="remarcado">Remarcado</option>
+                </select>
+                <button type="button" id="clear-filters">Todos</button>
+            </div>
+            <table id="appointments-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Serviço</th>
+                        <th>Cliente</th>
+                        <th>Telefone</th>
+                        <th>Pagamento</th>
+                        <th>Valor do serviço</th>
+                        <th>Valor pago</th>
+                        <th>Saldo pendente</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="appointments-body"></tbody>
+            </table>
+        </section>
+
+        <section class="card admin-controls finance-panel" id="finance-panel" aria-labelledby="finance-title">
+            <h2 id="finance-title">Controle Financeiro</h2>
+
+            <div class="finance-summary-grid">
+                <article class="finance-summary-card">
+                    <h3>Hoje</h3>
+                    <p id="finance-day-income">Ganhos: R$ 0,00</p>
+                    <p id="finance-day-discounts">Descontos: R$ 0,00</p>
+                    <p id="finance-day-pending">A receber: R$ 0,00</p>
+                    <p id="finance-day-expenses">Gastos: R$ 0,00</p>
+                    <p id="finance-day-balance">Saldo: R$ 0,00</p>
+                </article>
+                <article class="finance-summary-card">
+                    <h3>Mês atual</h3>
+                    <p id="finance-month-income">Ganhos: R$ 0,00</p>
+                    <p id="finance-month-discounts">Descontos: R$ 0,00</p>
+                    <p id="finance-month-pending">A receber: R$ 0,00</p>
+                    <p id="finance-month-expenses">Gastos: R$ 0,00</p>
+                    <p id="finance-month-balance">Saldo: R$ 0,00</p>
+                </article>
+            </div>
+
+            <section class="finance-expenses" aria-labelledby="cash-register-title">
+                <h3 id="cash-register-title">Abertura e fechamento de caixa</h3>
+                <div class="finance-summary-grid">
+                    <article class="finance-summary-card">
+                        <h3>Caixa atual</h3>
+                        <p id="cash-register-status">Status: Fechado</p>
+                        <p id="cash-register-date">Data: -</p>
+                        <p id="cash-register-opening">Abertura: R$ 0,00</p>
+                        <p id="cash-register-expected">Esperado: R$ 0,00</p>
+                        <p id="cash-register-difference">Diferença: R$ 0,00</p>
+                    </article>
+                </div>
+
+                <form class="expense-form" id="cash-settings-form">
+                    <input type="time" id="cash-opening-time" aria-label="Horário de abertura do caixa" required>
+                    <input type="time" id="cash-closing-time" aria-label="Horário de fechamento do caixa" required>
+                    <button type="submit">Salvar horários</button>
+                </form>
+                <p id="cash-register-schedule">Funcionamento automático por horário.</p>
+            </section>
+
+            <section class="finance-expenses" aria-labelledby="expense-form-title">
+                <h3 id="expense-form-title">Lançar gasto</h3>
+                <form class="expense-form" id="expense-form">
+                    <input type="date" id="expense-date" aria-label="Data do gasto" required>
+                    <input type="text" id="expense-description" placeholder="Descrição do gasto" aria-label="Descrição do gasto" required>
+                    <input type="text" id="expense-category" placeholder="Categoria" aria-label="Categoria do gasto">
+                    <input type="number" id="expense-amount" placeholder="Valor" min="0" step="0.01" aria-label="Valor do gasto" required>
+                    <button type="submit">Adicionar gasto</button>
+                </form>
+            </section>
+
+            <section class="finance-expenses" aria-labelledby="package-form-title">
+                <h3 id="package-form-title">Registrar pacote vendido</h3>
+                <form class="expense-form" id="package-form">
+                    <select id="package-service" aria-label="Pacote vendido" required></select>
+                    <input type="text" id="package-client-name" placeholder="Nome do cliente" aria-label="Nome do cliente do pacote" required>
+                    <input type="tel" id="package-client-phone" placeholder="Telefone (opcional)" aria-label="Telefone do cliente do pacote" inputmode="tel" autocomplete="tel">
+                    <input type="date" id="package-purchase-date" aria-label="Data da compra do pacote" required>
+                    <select id="package-payment-method" aria-label="Forma de pagamento do pacote">
+                        <option value="">Forma de pagamento</option>
+                        <option value="Pix">Pix</option>
+                        <option value="Crédito">Crédito</option>
+                        <option value="Débito">Débito</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Fiado">Fiado</option>
+                    </select>
+                    <input type="number" id="package-amount-paid" placeholder="Valor pago" min="0" step="0.01" aria-label="Valor pago no pacote">
+                    <textarea id="package-notes" placeholder="Observações do pacote" rows="3" aria-label="Observações do pacote"></textarea>
+                    <button type="submit">Registrar pacote</button>
+                </form>
+            </section>
+
+            <section class="expense-table-container" aria-labelledby="expense-list-title">
+                <h3 id="expense-list-title">Gastos lançados</h3>
+                <table id="expenses-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenses-body"></tbody>
+                </table>
+            </section>
+
+            <section class="expense-table-container" id="package-table-container" aria-labelledby="package-list-title">
+                <h3 id="package-list-title">Pacotes vendidos</h3>
+                <table id="packages-table">
+                    <thead>
+                        <tr>
+                            <th>Compra</th>
+                            <th>Cliente</th>
+                            <th>Pacote</th>
+                            <th>Usadas</th>
+                            <th>Restantes</th>
+                            <th>Validade</th>
+                            <th>Pagamento</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="packages-body"></tbody>
+                </table>
+            </section>
+
+            <section class="expense-table-container" id="cash-register-table-container" aria-labelledby="cash-register-history-title">
+                <h3 id="cash-register-history-title">Histórico de caixa</h3>
+                <table id="cash-registers-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th>Abertura</th>
+                            <th>Entradas</th>
+                            <th>Gastos</th>
+                            <th>Esperado</th>
+                            <th>Contado</th>
+                            <th>Diferença</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cash-registers-body"></tbody>
+                </table>
+            </section>
+        </section>
+
+        <section class="card admin-controls finance-panel" id="finance-report-panel" aria-labelledby="finance-report-title">
+            <h2 id="finance-report-title">Relatório Financeiro por Período</h2>
+            <form class="expense-form" id="finance-report-form">
+                <input type="date" id="report-start-date" aria-label="Data inicial do relatório" required>
+                <input type="date" id="report-end-date" aria-label="Data final do relatório" required>
+                <button type="submit">Gerar relatório</button>
+            </form>
+            <div class="finance-summary-grid">
+                <article class="finance-summary-card">
+                    <h3>Recebido no período</h3>
+                    <p id="report-income">R$ 0,00</p>
+                </article>
+                <article class="finance-summary-card">
+                    <h3>Descontos no período</h3>
+                    <p id="report-discounts">R$ 0,00</p>
+                </article>
+                <article class="finance-summary-card">
+                    <h3>Gastos no período</h3>
+                    <p id="report-expenses">R$ 0,00</p>
+                </article>
+                <article class="finance-summary-card">
+                    <h3>Saldo do período</h3>
+                    <p id="report-balance">R$ 0,00</p>
+                </article>
+                <article class="finance-summary-card">
+                    <h3>A receber no período</h3>
+                    <p id="report-pending">R$ 0,00</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="card admin-controls finance-panel" id="clients-panel" aria-labelledby="clients-title">
+            <h2 id="clients-title">Cadastro de Clientes</h2>
+            <div class="appointment-filters">
+                <input type="text" id="client-search" placeholder="Buscar cliente por nome ou telefone">
+            </div>
+            <table id="clients-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Telefone</th>
+                        <th>Último serviço</th>
+                        <th>Último atendimento</th>
+                        <th>Frequência</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-body"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Studio Derenice Freitas. Todos os direitos reservados.</p>
+    </footer>
+
+    <div class="floating-support" aria-label="Contatos de suporte técnico">
+        <button type="button" class="floating-support-toggle" id="floating-support-toggle" aria-expanded="false" aria-controls="floating-support-links">
+            Suporte
+        </button>
+        <div class="floating-support-links" id="floating-support-links" hidden>
+            <a href="https://wa.me/5564996488062" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            <a href="https://www.instagram.com/programando_projetos" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="mailto:projetosdeprogramador3489@gmail.com">Email</a>
+        </div>
+    </div>
+
+    <div class="login-modal" id="login-modal">
+        <div class="login-content">
+            <button class="close-btn" id="close-modal" type="button" aria-label="Fechar login">&times;</button>
+            <h2>Login de administrador</h2>
+            <form class="login-form" id="login-form">
+                <input type="text" name="username" placeholder="Nome de usuário" required>
+                <input type="password" name="password" placeholder="Senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="remark-modal" id="remark-modal">
+        <div class="remark-content">
+            <button class="close-btn" id="close-remark-modal" type="button" aria-label="Fechar remarcação">&times;</button>
+            <h2>Remarcar agendamento</h2>
+            <form class="remark-form" id="remark-form">
+                <input type="hidden" name="appointment-id" id="remark-id">
+                <div class="calendar">
+                    <h3>Nova data</h3>
+                    <input type="date" id="remark-date" required>
+                </div>
+                <div class="time-slot">
+                    <h3>Novo horário</h3>
+                    <select id="remark-time"></select>
+                </div>
+                <button type="submit">Confirmar remarcação</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="remark-modal" id="edit-modal">
+        <div class="remark-content edit-content">
+            <button class="close-btn" id="close-edit-modal" type="button" aria-label="Fechar edição">&times;</button>
+            <h2>Editar agendamento</h2>
+            <form class="remark-form edit-form" id="edit-form">
+                <input type="hidden" id="edit-id">
+                <input type="date" id="edit-date" required>
+                <input type="time" id="edit-time" step="300" min="06:00" max="22:00" required>
+                <select id="edit-service" required></select>
+                <input type="text" id="edit-name" placeholder="Nome completo" required>
+                <input type="tel" id="edit-phone" placeholder="Telefone (opcional)" inputmode="tel" autocomplete="tel">
+                <select id="edit-status" required>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="compareceu">Compareceu</option>
+                    <option value="faltou">Faltou</option>
+                    <option value="cancelado">Cancelado</option>
+                    <option value="remarcado">Remarcado</option>
+                </select>
+                <select id="edit-payment-status" required>
+                    <option value="pendente">Pagamento pendente</option>
+                    <option value="parcial">Pagamento parcial</option>
+                    <option value="pago">Pago</option>
+                </select>
+                <select id="edit-payment-method">
+                    <option value="">Forma de pagamento</option>
+                    <option value="Pix">Pix</option>
+                    <option value="Crédito">Crédito</option>
+                    <option value="Débito">Débito</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Pacote">Pacote</option>
+                    <option value="Fiado">Fiado</option>
+                </select>
+                <input type="number" id="edit-discount" placeholder="Desconto" min="0" step="0.01">
+                <input type="number" id="edit-amount-paid" placeholder="Valor pago" min="0" step="0.01">
+                <textarea id="edit-notes" placeholder="Observações do agendamento" rows="4"></textarea>
+                <button type="submit">Salvar alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="remark-modal" id="package-edit-modal">
+        <div class="remark-content edit-content">
+            <button class="close-btn" id="close-package-edit-modal" type="button" aria-label="Fechar edição do pacote">&times;</button>
+            <h2>Editar pacote vendido</h2>
+            <form class="remark-form edit-form" id="package-edit-form">
+                <input type="hidden" id="package-edit-id">
+                <input type="text" id="package-edit-client" placeholder="Cliente" disabled>
+                <input type="text" id="package-edit-service" placeholder="Pacote" disabled>
+                <input type="date" id="package-edit-purchase-date" required>
+                <input type="date" id="package-edit-expires-on" required>
+                <input type="number" id="package-edit-sessions-limit" placeholder="Sessões no pacote" min="1" step="1" required>
+                <select id="package-edit-payment-status" required>
+                    <option value="pendente">Pagamento pendente</option>
+                    <option value="parcial">Pagamento parcial</option>
+                    <option value="pago">Pago</option>
+                </select>
+                <select id="package-edit-payment-method">
+                    <option value="">Forma de pagamento</option>
+                    <option value="Pix">Pix</option>
+                    <option value="Crédito">Crédito</option>
+                    <option value="Débito">Débito</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Fiado">Fiado</option>
+                </select>
+                <input type="number" id="package-edit-amount-paid" placeholder="Valor pago" min="0" step="0.01">
+                <textarea id="package-edit-notes" placeholder="Observações do pacote" rows="4"></textarea>
+                <button type="submit">Salvar pacote</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="remark-modal" id="expense-edit-modal">
+        <div class="remark-content edit-content">
+            <button class="close-btn" id="close-expense-edit-modal" type="button" aria-label="Fechar edição do gasto">&times;</button>
+            <h2>Editar gasto</h2>
+            <form class="remark-form edit-form" id="expense-edit-form">
+                <input type="hidden" id="expense-edit-id">
+                <input type="date" id="expense-edit-date" required>
+                <input type="text" id="expense-edit-description" placeholder="Descrição do gasto" required>
+                <input type="text" id="expense-edit-category" placeholder="Categoria">
+                <input type="number" id="expense-edit-amount" placeholder="Valor" min="0" step="0.01" required>
+                <button type="submit">Salvar gasto</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="static/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+[
+  {
+    "username": "Derenice",
+    "password": "pbkdf2$100000$sha512$008349e19704f39b41661b0d7055014d$67daee275f298b4a98b60bb55dcf0623821caf4ff1bd596aac1f7e6a007ed5ac4fa55c9e6b01a2ac53122ed700de81285c29fe3883aefb85792520253c538ce4",
+    "passwords": [
+      "pbkdf2$100000$sha512$008349e19704f39b41661b0d7055014d$67daee275f298b4a98b60bb55dcf0623821caf4ff1bd596aac1f7e6a007ed5ac4fa55c9e6b01a2ac53122ed700de81285c29fe3883aefb85792520253c538ce4"
+    ],
+    "role": "admin",
+    "name": "Administrador"
+  },
+  {
+    "username": "Luis henrique",
+    "password": "pbkdf2$100000$sha512$008349e19704f39b41661b0d7055014d$67daee275f298b4a98b60bb55dcf0623821caf4ff1bd596aac1f7e6a007ed5ac4fa55c9e6b01a2ac53122ed700de81285c29fe3883aefb85792520253c538ce4",
+    "passwords": [
+      "pbkdf2$100000$sha512$008349e19704f39b41661b0d7055014d$67daee275f298b4a98b60bb55dcf0623821caf4ff1bd596aac1f7e6a007ed5ac4fa55c9e6b01a2ac53122ed700de81285c29fe3883aefb85792520253c538ce4"
+    ],
+    "role": "admin",
+    "name": "Administrador"
+  },
+  {
+    "username": "recepcao",
+    "password": "pbkdf2$100000$sha512$58d0ab346115f4746ed4df4ac93c6cb3$8ba5d522c27d39bb062760b07d4787faa5dd55e51fa87229107aa611deb66f499edd5eae0f69821c1b5342a58b4755ef8bb6bf6d5701fa22bc0ce8b704296c6d",
+    "role": "recepcao",
+    "name": "Recepção"
+  },
+  {
+    "username": "auxiliar",
+    "password": "pbkdf2$100000$sha512$04a6ff34ea4db8b22f06453c2e85b56e$724cdedc20c00d0886c3d633714985b01bc940ce9168aafa81edd066d26623e3fe21ba3dd9edd141255f6cd1b40d59f9da4ab18c39f373381218327aa31f8f6a",
+    "role": "auxiliar",
+    "name": "Auxiliar"
+  }
+]
+
